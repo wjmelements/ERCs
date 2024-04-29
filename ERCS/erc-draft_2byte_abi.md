@@ -68,8 +68,8 @@ Thus the standard `revert` index is `0x0d`.
 This batch architecture uses two-byte prefixes because the current `CODESIZE` limit fits in two bytes.
 If this limit were larger, larger prefixes can be used, but this also brings larger calldata.
 
-jaredfromsubway.eth developed a similar batcher that used a one-byte prefix to index into a jump table at the beginning of the code.
-That design is not modular and constrains the number of possible subprograms.
+jaredfromsubway.eth developed a similar batcher that pads each subprogram to 256 bytes in order to use a 1byte prefix. 
+This 1byte ABI can be more efficient depending on the cost of additional code size from the padding compared to the number of expected executions.
 
 While most subprograms should increase the calldata index by two plus the length of their parameters, allowing subprograms to rollback the calldata index allows looping groups of subprograms through a list of parameters while reusing calldata.
 
