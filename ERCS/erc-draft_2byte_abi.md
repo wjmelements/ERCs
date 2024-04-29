@@ -25,6 +25,14 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 The calldata to a 2byte batcher is a concatenation of subcommands each starting with a two-byte prefix selecting a `JUMPDEST` for execution.
 The batcher MAY execute these subcommands sequentially, possibly reverting early for any reason.
 
+### Subprograms
+
+A subprogram:
+* MUST start with a `JUMPDEST`.
+* MUST finish with a conditional or unconditional jump to the next subprogram.
+* SHOULD modify the calldata indices.
+* SHOULD NOT pollute the stack with unused remnants.
+
 ### Common State
 
 Some state MAY be common to all subprograms.
@@ -38,14 +46,6 @@ The batcher MAY also use temporary storage for state common to all subprograms.
 A calldata index maintains the batcher's progress in the workload.
 
 It is RECOMMENDED to maintain only one calldata index, at the top of the common stack.
-
-### Subprograms
-
-A subprogram:
-* MUST start with a `JUMPDEST`.
-* MUST finish with a conditional or unconditional jump to the next subprogram.
-* SHOULD modify the calldata indices.
-* SHOULD NOT pollute the stack with unused remnants.
 
 ### Authenticate-Last
 
