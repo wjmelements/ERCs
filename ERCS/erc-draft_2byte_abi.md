@@ -96,8 +96,9 @@ The 2byte Batch ABI is not backwards compatible with the 4byte ABI, but contract
 
 ## Reference Implementation
 
-This is a 2byte batcher implementation for owner `0x4a6f6B9fF1fc974096f9063a45Fd12bD5B928AD1` with subprograms `logzero`, `callwithvalue`, `callwithoutvalue`, and `authstopowner`.
+This is a 2byte batcher implementation for owner `0x4a6f6B9fF1fc974096f9063a45Fd12bD5B928AD1` with subprograms `logzero`, `callwithvalue`, `callwithoutvalue`, `authstopowner`, and `authstopecrecover`.
 It practices "Authenticate-Last" and maintains a calldata index at the top of the common stack. 
+`authstopecrecover` allows a third party, e.g. a paymaster, to execute the a transaction on behalf of this account.
 ```
 JUMPI(init, CALLDATASIZE)
 STOP
@@ -152,7 +153,7 @@ authstopowner:
 JUMPI(revert, XOR(0x4a6f6B9fF1fc974096f9063a45Fd12bD5B928AD1, CALLER))
 STOP
 
-authstopecrecvover:
+authstopecrecover:
 // nonce32, v1, r32, s32
 2 ADD
 CALLDATALOAD(DUP1) // nonce
