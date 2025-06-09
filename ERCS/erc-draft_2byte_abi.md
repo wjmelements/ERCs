@@ -61,10 +61,42 @@ Subprograms requiring additional authentication SHOULD flag this for later verif
 The batcher code SHOULD begin:
 
 ```
-36600557005b5f5f3560f01c565b595ffd
+JUMPI(init, CALLDATASIZE)
+STOP
+
+revert:
+REVERT(0, MSIZE)
+
+init:
+0
+JUMP(SHR(240, CALLDATALOAD(0)))
 ```
 
-Thus the standard `revert` index is `0x0d`.
+which assembles to:
+
+```
+36600957005b595ffd5b5f5f3560f01c56
+```
+
+Thus the standard `revert` index is `0x0005`.
+
+#### Callbacks
+Alternative headers can be used to support callbacks.
+
+A temporary storage index can be used to provide the calldata index at which the instructions begin.
+Such a header might instead look like:
+
+```
+JUMPI(init, CALLDATASIZE)
+STOP
+
+revert:
+REVERT(0, MSIZE)
+
+init:
+TLOAD(0)
+JUMP(SHR(240, CALLDATALOAD(0)))
+```
 
 ## Rationale
 
