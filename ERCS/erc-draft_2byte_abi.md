@@ -51,6 +51,9 @@ It is RECOMMENDED to maintain only one calldata index, at the top of the common 
 
 A batcher MAY authenticate-last by prohibiting subprograms that would allow an early `STOP`, `RETURN`, or `SELFDESTRUCT`, except after final authentication.
 
+Authenticating last allows for extensible validation logic.
+Specialized authentication can facilitate callbacks and paymasters.
+
 Subprograms requiring additional authentication SHOULD flag this for later verification
 
 ### Code Header 
@@ -147,6 +150,31 @@ REVERT(0, MSIZE)
 
 authstopowner:
 JUMPI(revert, XOR(0x4a6f6B9fF1fc974096f9063a45Fd12bD5B928AD1, CALLER))
+STOP
+
+authstopecrecvover:
+// nonce32, v1, r32, s32
+2 ADD
+CALLDATALOAD(DUP1) // nonce
+JUMPI(revert, SLOAD(DUP1)) // check nonce not used
+SWAP1
+32 ADD
+CALLDATACOPY(0, 0, DUP1)
+MSTORE(0, SHA3(0, DUP1))
+MSTORE(32, 0)
+CALLDATACOPY(63, DUP2, 65)
+JUMPI(
+    revert,
+    OR(
+        XOR(0x4a6f6B9fF1fc974096f9063a45Fd12bD5B928AD1, MLOAD(0)),
+        OR(
+            ISZERO(RETURNDATASIZE),
+            STATICCALL(GAS, ECDSARECOVER, 0, 128, 0, 32)
+        )
+    )
+)
+SWAP1
+SSTORE // mark nonce used
 STOP
 ```
 
