@@ -16,7 +16,14 @@ By concatenating subprograms, a modular smart contract architecture emerges suit
 ## Motivation
 
 The only standardized ABI at this time is the 4byte ABI designed by Solidity and adopted by other compilers like Vyper.
+
+### Reduced calldata
 This specification uses substantially less calldata than alternative batching designs implementing the 4byte ABI, such as [ERC-4337](./erc-4337.md).
+This is because the parameter encoding is tailored to each function.
+
+### Composable Capabilities
+It is possible to `CREATE` a program from a list of desired functions by concatenating corresponding subprograms.
+This can be useful for assembling scoped accounts with fixed capabilities.
 
 ## Specification
 
